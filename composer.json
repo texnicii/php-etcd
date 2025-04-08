@@ -1,6 +1,6 @@
 {
-  "name": "aternos/etcd",
-  "description": "PHP gRPC client for etcd v3",
+  "name": "texnicii/etcd",
+  "description": "PHP gRPC client for etcd v3 (forked from aternos/etcd)",
   "type": "library",
   "require": {
     "php": ">=7.1",
