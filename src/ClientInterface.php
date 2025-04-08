@@ -7,6 +7,8 @@ use Etcdserverpb\Compare;
 use Etcdserverpb\RequestOp;
 use Etcdserverpb\TxnResponse;
 use Exception;
+use Generator;
+use Mvccpb\KeyValue;
 
 /**
  * Interface ClientInterface
@@ -48,7 +50,7 @@ interface ClientInterface
      * Get range of values by key prefix
      *
      * @param string $prefix
-     * @return bool|string
+     * @return bool|Generator<KeyValue>
      * @throws InvalidResponseStatusCodeException
      */
     public function getWithPrefix(string $prefix);
