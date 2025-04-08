@@ -108,6 +108,15 @@ class FailoverClient implements ClientInterface
      * @inheritDoc
      * @throws NoClientAvailableException
      */
+    public function getWithPrefix(string $prefix)
+    {
+        return $this->callClientMethod(__FUNCTION__, false, $prefix);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NoClientAvailableException
+     */
     public function delete(string $key)
     {
         return $this->callClientMethod(__FUNCTION__, false, $key);
