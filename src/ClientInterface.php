@@ -45,6 +45,15 @@ interface ClientInterface
     public function get(string $key);
 
     /**
+     * Get range of values by key prefix
+     *
+     * @param string $prefix
+     * @return bool|string
+     * @throws InvalidResponseStatusCodeException
+     */
+    public function getWithPrefix(string $prefix);
+
+    /**
      * Delete a key
      *
      * @param string $key
