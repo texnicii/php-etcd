@@ -8,7 +8,6 @@ use Etcdserverpb\RangeRequest;
 use Etcdserverpb\RequestOp;
 use Etcdserverpb\TxnResponse;
 use Flexihash\Exception;
-use Flexihash\Exception\Status\InvalidResponseStatusCodeException;
 use Flexihash\Flexihash;
 use Generator;
 
