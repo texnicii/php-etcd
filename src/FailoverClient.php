@@ -8,8 +8,10 @@ use Aternos\Etcd\Exception\NoResponseException;
 use Aternos\Etcd\Exception\Status\DeadlineExceededException;
 use Aternos\Etcd\Exception\Status\UnavailableException;
 use Etcdserverpb\Compare;
+use Etcdserverpb\RangeRequest;
 use Etcdserverpb\RequestOp;
 use Etcdserverpb\TxnResponse;
+use Generator;
 
 /**
  * Class FailoverClient
@@ -105,12 +107,23 @@ class FailoverClient implements ClientInterface
     }
 
     /**
+     * @param string $prefix
+     * @param int $limit
      * @inheritDoc
      * @throws NoClientAvailableException
      */
-    public function getWithPrefix(string $prefix)
+    public function getWithPrefix(string $prefix, int $limit = 100): Generator
     {
-        return $this->callClientMethod(__FUNCTION__, false, $prefix);
+        return $this->callClientMethod(__FUNCTION__, false, $prefix, $limit);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NoClientAvailableException
+     */
+    public function getWithRequest(RangeRequest $request): Generator
+    {
+        return $this->callClientMethod(__FUNCTION__, false, $request);
     }
 
     /**

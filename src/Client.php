@@ -169,16 +169,51 @@ class Client implements ClientInterface
      * Get range of values by key prefix
      *
      * @param string $prefix
-     * @return bool|Generator<KeyValue>
+     * @param int $limit
+     * @return Generator<KeyValue>
      * @throws InvalidResponseStatusCodeException
      */
-    public function getWithPrefix(string $prefix): Generator
+    public function getWithPrefix(string $prefix, int $limit = 100): Generator
     {
         $client = $this->getKvClient();
+        $rangeEnd = $prefix."\xff";
 
-        $request = new RangeRequest();
-        $request->setKey($prefix);
-        $request->setRangeEnd($prefix."\xff");
+        do{
+            $request = (new RangeRequest())
+                ->setKey($prefix)
+                ->setRangeEnd($rangeEnd)
+                ->setLimit($limit);
+
+            /** @var RangeResponse $response */
+            [$response, $status] = $client->Range($request, $this->getMetaData(), $this->getOptions())->wait();
+            $this->validateStatus($status);
+
+            $field = $response->getKvs();
+            if (count($field) === 0) {
+                return;
+            }
+
+            foreach ($field as $kv) {
+                yield $kv;
+            }
+
+            if(!isset($kv)) {
+                return;
+            }
+            $prefix = $kv->getKey()."\x00";
+        }while (true);
+    }
+
+    /**
+     * Get range of keys or values by custom request
+     *
+     * @param RangeRequest $request
+     * @return Generator<KeyValue>
+     * @throws InvalidResponseStatusCodeException
+     */
+    public function getWithRequest(RangeRequest $request): Generator
+    {
+        $client = $this->getKvClient();
 
         /** @var RangeResponse $response */
         [$response, $status] = $client->Range($request, $this->getMetaData(), $this->getOptions())->wait();
@@ -187,7 +222,7 @@ class Client implements ClientInterface
         $field = $response->getKvs();
 
         if (count($field) === 0) {
-            return false;
+            return;
         }
 
         yield from $field;

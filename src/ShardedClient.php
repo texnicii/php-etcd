@@ -4,10 +4,13 @@ namespace Aternos\Etcd;
 
 use Aternos\Etcd\Exception\InvalidClientException;
 use Etcdserverpb\Compare;
+use Etcdserverpb\RangeRequest;
 use Etcdserverpb\RequestOp;
 use Etcdserverpb\TxnResponse;
 use Flexihash\Exception;
+use Flexihash\Exception\Status\InvalidResponseStatusCodeException;
 use Flexihash\Flexihash;
+use Generator;
 
 /**
  * Class ShardedClient
@@ -112,6 +115,26 @@ class ShardedClient implements ClientInterface
     public function get(string $key)
     {
         return $this->getClientFromKey($key)->get($key);
+    }
+
+    /**
+     * @param string $prefix
+     * @param int $limit
+     * @inheritDoc
+     * @throws Exception
+     */
+    public function getWithPrefix(string $prefix, int $limit = 100): Generator
+    {
+        return $this->getClientFromKey($prefix)->getWithPrefix($prefix, $limit);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
+    public function getWithRequest(RangeRequest $request): Generator
+    {
+        return $this->getClientFromKey($request->getKey())->getWithRequest($request);
     }
 
     /**
