@@ -4,6 +4,7 @@ namespace Aternos\Etcd;
 
 use Aternos\Etcd\Exception\Status\InvalidResponseStatusCodeException;
 use Etcdserverpb\Compare;
+use Etcdserverpb\RangeRequest;
 use Etcdserverpb\RequestOp;
 use Etcdserverpb\TxnResponse;
 use Exception;
@@ -50,10 +51,20 @@ interface ClientInterface
      * Get range of values by key prefix
      *
      * @param string $prefix
-     * @return bool|Generator<KeyValue>
+     * @param int $limit The limit number of keys to be returned in one request (size of page)
+     * @return Generator<KeyValue>
      * @throws InvalidResponseStatusCodeException
      */
-    public function getWithPrefix(string $prefix);
+    public function getWithPrefix(string $prefix, int $limit = 100): Generator;
+
+    /**
+     * Get range of keys or values by custom request
+     *
+     * @param RangeRequest $request
+     * @return Generator<KeyValue>
+     * @throws InvalidResponseStatusCodeException
+     */
+    public function getWithRequest(RangeRequest $request): Generator;
 
     /**
      * Delete a key
