@@ -50,10 +50,11 @@ interface ClientInterface
      * Get range of values by key prefix
      *
      * @param string $prefix
-     * @return bool|Generator<KeyValue>
+     * @param int $limit The limit number of keys to be returned in one request (size of page)
+     * @return Generator<KeyValue>
      * @throws InvalidResponseStatusCodeException
      */
-    public function getWithPrefix(string $prefix);
+    public function getWithPrefix(string $prefix, int $limit = 100): Generator;
 
     /**
      * Delete a key
